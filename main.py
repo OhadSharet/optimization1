@@ -45,7 +45,7 @@ def ex4a():
     print("x : \n %s" % str(x))
 
 
-def ex4b():
+def ex4b_QR():
     A = np.array([[2, 1, 2],
                   [1, -2, 1],
                   [1, 2, 3],
@@ -69,6 +69,60 @@ def ex4b():
     print("Q : \n %s" % str(Q))
     print("R : \n %s" % str(R))
     print("x : \n %s" % str(x))
+
+
+def ex4b_SVD():
+    A = np.array([[2, 1, 2],
+                  [1, -2, 1],
+                  [1, 2, 3],
+                  [1, 1, 1]])
+    b = np.array([[6],
+                  [1],
+                  [5],
+                  [2]])
+    AT = A.transpose()
+    ATA = AT @ A
+    ATb = AT @ b
+    U, S, VT = np.linalg.svd(ATA)
+    S = np.array([[S[0], 0, 0],
+                 [0, S[1], 0],
+                 [0, 0, S[2]]])
+    U_inverse = np.linalg.inv(U)
+    S_inverse = np.linalg.inv(S)
+    VT_inverse = np.linalg.inv(VT)
+
+    # z = U^-1 @ ATb
+    # y = S^-1 @ U^-1 @ ATb => S^-1 @ z
+    # x = (U @ S @ VT)^-1 @ ATb => x = VT^-1 @ S^-1 @ U^-1 @ Ab => x = VT^-1 @ z
+    z = U_inverse @ ATb
+    y = S_inverse @ z
+    x = VT_inverse @ y
+    print("ATA : \n %s" % str(ATA))
+    print("U : \n %s" % str(U))
+    print("∑ : \n %s" % str(S))
+    print("VT : \n %s" % str(VT))
+    print("x : \n %s" % str(x))
+
+
+def ex4c():
+    A = np.array([[2, 1, 2],
+                  [1, -2, 1],
+                  [1, 2, 3],
+                  [1, 1, 1]])
+    b = np.array([[6],
+                  [1],
+                  [5],
+                  [2]])
+    x = np.array([[1.7],
+                  [0.6],
+                  [0.7]])
+    Ax = A @ x
+    r = Ax - b
+    ATr = A.transpose() @ r
+
+    print("Ax : \n %s" % str(Ax))
+    print("r : \n %s" % str(r))
+    print("ATr : \n %s" % str(ATr))
 
 
 def gram_schmidt(A, make_orthogonal):
@@ -181,6 +235,10 @@ def ex5(eps=1):
 
 
 if __name__ == '__main__':
-    ex4b()
-    #ex5()
-    #ex5(float('1e-10'))
+    #ex1b()
+    #ex4a()
+    #ex4b_QR()
+    #ex4b_SVD()
+    #ex4c()
+    ex5()
+    ex5(float('1e-10'))

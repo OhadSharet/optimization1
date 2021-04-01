@@ -80,13 +80,18 @@ def ex4b_SVD():
                   [1],
                   [5],
                   [2]])
-    AT = A.transpose()
+
+    W = np.array([[900, 0, 0,0],
+                  [0, 1, 0,0],
+                  [0, 0, 1,0],
+                  [0, 0, 0,1]])
+    AT = A.transpose()@ W
     ATA = AT @ A
     ATb = AT @ b
     U, S, VT = np.linalg.svd(ATA)
     S = np.array([[S[0], 0, 0],
-                 [0, S[1], 0],
-                 [0, 0, S[2]]])
+                  [0, S[1], 0],
+                  [0, 0, S[2]]])
     U_inverse = np.linalg.inv(U)
     S_inverse = np.linalg.inv(S)
     VT_inverse = np.linalg.inv(VT)
@@ -102,7 +107,8 @@ def ex4b_SVD():
     print("∑ : \n %s" % str(S))
     print("VT : \n %s" % str(VT))
     print("x : \n %s" % str(x))
-
+    r = A@x - b
+    print ("r : \n %s"% str(r))
 
 def ex4c():
     A = np.array([[2, 1, 2],
@@ -126,38 +132,26 @@ def ex4c():
 
 
 def gram_schmidt(A, make_orthogonal):
+    '''
+    :param A: the matrix
+    :param make_orthogonal: function that gets a matrix 'M' and vector 'V'
+    and returns the ortogonal vector of 'V' to the matrix 'M'
+     and r that will be added to the R matrix
+    :return: Q matrix and R matrix
+    '''
     a_cols = A.transpose()
     n = len(A[0])
     new_cols = np.array([a_cols[0] / np.linalg.norm(a_cols[0], ord=2)])
-    rs = [np.zeros(n)]
+    rs = [np.zeros(n)]  # initializing R
     rs[0][0] = np.linalg.norm(a_cols[0], ord=2)
     a_cols = np.delete(a_cols, 0, 0)
 
     for a in a_cols:
         q, r = make_orthogonal(a, new_cols, n)
-        new_cols = np.vstack([new_cols, q])
-        rs.append(r)
+        new_cols = np.vstack([new_cols, q])  # adding the ortogonal vector to Q
+        rs.append(r)  # adding the needed vector to R
     finale_R = np.stack(rs, axis=0)
     return new_cols.transpose(), finale_R.transpose()
-
-
-# def gram_schmidt2(A):
-#     n=len(A)
-#     R = np.zeros((n,n))
-#     a_cols = A.transpose()
-#     r[0][0] = np.linalg.norm(a_cols[0],ord=2)
-#     final_q = [a_cols[0]/r[0][0]]
-#     for i in range(1,len(a_cols)):
-#         ai = a_cols[i]
-#         qi=ai
-#         for j in range(i-1):
-#             qj = final_q[j]
-#             R[j][i] = qj.transpose()@ai
-#             qi=qi-R[j][i]*qj
-#         R[i][i] = np.linalg.norm(qi,ord=2)
-#         qi=qi/R[i][i]
-#         final_q = np.vstack([final_q,qi])
-#     return final_q.transpose(),R
 
 
 def get_orthogonal_vector(vec, mat, rlen):
@@ -201,33 +195,43 @@ def get_orthogonal_vector_modified(vec, mat, rlen):
 
 
 def gram_schmidt_original(A):
+    '''
+    preforming the simple version of gram schmidt
+    :param A: matrix
+    :return: Q matrix and R matrix
+    '''
     return gram_schmidt(A, get_orthogonal_vector)
 
 
 def gram_schmidt_modified(A):
+    '''
+    preforming the modified version of gram schmidt
+    :param A: matrix
+    :return: Q matrix and R matrix
+    '''
     return gram_schmidt(A, get_orthogonal_vector_modified)
 
 
 def ex5(eps=1):
     A = np.array([[1, 1, 1], [eps, 0, 0], [0, eps, 0], [0, 0, eps]])
     q1, r1 = gram_schmidt_original(A)
-    print("\n==============q================= - gram_schmidt_original \n")
+    print("\n==============q================= - gram_schmidt_original epsilon = %s\n"%eps)
     print(q1)
-    print("\n==============r================= - gram_schmidt_original\n")
+    print("\n==============r================= - gram_schmidt_original epsilon = %s\n"%eps)
     print(r1)
 
-    print("\n===========Q@R============== gram_schmidt_original\n")
+    print("\n===========Q@R============== gram_schmidt_original epsilon = %s\n"%eps)
     print(q1 @ r1)
     qtq = q1.transpose() @ q1
     print("\n||QTQ-I|| - gram_schmidt_original: %s" % str(np.linalg.norm(qtq - np.identity(len(qtq[0])), ord='fro')))
 
     q2, r2 = gram_schmidt_modified(A)
-    print("\n==============q================= - gram_schmidt_modified\n")
+    print("\n==============q================= - gram_schmidt_modified epsilon = %s\n"%eps)
     print(q2)
-    print("\n==============r================= - gram_schmidt_modified\n")
+    print("\n==============r================= - gram_schmidt_modified epsilon = %s\n"%eps)
     print(r2)
 
-    print("\n===========Q@R============== gram_schmidt_modified\n")
+    print("\n===========Q@R============== gram_schmidt_modified epsilon = %s\n"%eps)
     print(q2 @ r2)
 
     qtq = q2.transpose() @ q2
@@ -235,10 +239,11 @@ def ex5(eps=1):
 
 
 if __name__ == '__main__':
-    #ex1b()
+    # ex1b()
     #ex4a()
-    #ex4b_QR()
-    #ex4b_SVD()
-    #ex4c()
-    ex5()
-    ex5(float('1e-10'))
+    # ex4b_QR()
+    # ex4b_SVD()
+    # ex4c()
+    ex4b_SVD()
+    # ex5()
+    # ex5(float('1e-10'))

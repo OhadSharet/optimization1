@@ -54,18 +54,15 @@ def ex4b_QR():
                   [1],
                   [5],
                   [2]])
-    AT = A.transpose()
-    ATA = AT @ A
-    ATb = AT @ b
-    Q, R = np.linalg.qr(ATA)
-    Q_inverse = np.linalg.inv(Q)
+
+    Q, R = np.linalg.qr(A)
+    QT = Q.transpose()
     R_inverse = np.linalg.inv(R)
 
-    # y = Q^-1 @ ATb
-    # x = (Q @ R)^-1 @ ATb => x = R^-1 @ Q^-1 @ Ab => x = R^-1 @ y
-    y = Q_inverse @ ATb
+    # Mark: y = QT @ b
+    # x = R^-1 @ QT @ b => x = R^-1 @ y
+    y = QT @ b
     x = R_inverse @ y
-    print("ATA : \n %s" % str(ATA))
     print("Q : \n %s" % str(Q))
     print("R : \n %s" % str(R))
     print("x : \n %s" % str(x))
@@ -80,24 +77,25 @@ def ex4b_SVD():
                   [1],
                   [5],
                   [2]])
-    AT = A.transpose()
-    ATA = AT @ A
-    ATb = AT @ b
-    U, S, VT = np.linalg.svd(ATA)
+
+    U, S, VT = np.linalg.svd(A)
     S = np.array([[S[0], 0, 0],
                  [0, S[1], 0],
                  [0, 0, S[2]]])
-    U_inverse = np.linalg.inv(U)
+    UT = U.transpose()
+    V = VT.transpose()
     S_inverse = np.linalg.inv(S)
-    VT_inverse = np.linalg.inv(VT)
+    S_inverse = np.array([[S_inverse[0][0], 0, 0, 0],
+                 [0, S_inverse[1][1], 0, 0],
+                 [0, 0, S_inverse[2][2], 0]])
 
-    # z = U^-1 @ ATb
-    # y = S^-1 @ U^-1 @ ATb => S^-1 @ z
-    # x = (U @ S @ VT)^-1 @ ATb => x = VT^-1 @ S^-1 @ U^-1 @ Ab => x = VT^-1 @ z
-    z = U_inverse @ ATb
+    # Mark: y = VT @ x
+    # Mark: z = UT @ b
+    # S @ y = UT @ b => y = S^-1 @ UT @ b => y = S^-1 @ z
+    # x = V @ y
+    z = UT @ b
     y = S_inverse @ z
-    x = VT_inverse @ y
-    print("ATA : \n %s" % str(ATA))
+    x = V @ y
     print("U : \n %s" % str(U))
     print("∑ : \n %s" % str(S))
     print("VT : \n %s" % str(VT))
@@ -135,34 +133,21 @@ def ex4d():
                   [5],
                   [2]])
 
-    W = np.array([[900, 0, 0,0],
-                  [0, 1, 0,0],
-                  [0, 0, 1,0],
-                  [0, 0, 0,1]])
-    AT = A.transpose()@ W
-    ATA = AT @ A
-    ATb = AT @ b
-    U, S, VT = np.linalg.svd(ATA)
-    S = np.array([[S[0], 0, 0],
-                  [0, S[1], 0],
-                  [0, 0, S[2]]])
-    U_inverse = np.linalg.inv(U)
-    S_inverse = np.linalg.inv(S)
-    VT_inverse = np.linalg.inv(VT)
+    W = np.array([[900, 0, 0, 0],
+                  [0, 1, 0, 0],
+                  [0, 0, 1, 0],
+                  [0, 0, 0, 1]])
+    ATW = A.transpose() @ W
+    ATWA = ATW @ A
+    ATWb = ATW @ b
+    ATWA_inverse = np.linalg.inv(ATWA)
 
-    # z = U^-1 @ ATb
-    # y = S^-1 @ U^-1 @ ATb => S^-1 @ z
-    # x = (U @ S @ VT)^-1 @ ATb => x = VT^-1 @ S^-1 @ U^-1 @ Ab => x = VT^-1 @ z
-    z = U_inverse @ ATb
-    y = S_inverse @ z
-    x = VT_inverse @ y
-    print("ATA : \n %s" % str(ATA))
-    print("U : \n %s" % str(U))
-    print("∑ : \n %s" % str(S))
-    print("VT : \n %s" % str(VT))
+    x = ATWA_inverse @ ATWb
+    print("W : \n %s" % str(W))
+    print("ATWA : \n %s" % str(ATWA))
     print("x : \n %s" % str(x))
     r = A@x - b
-    print ("r : \n %s"% str(r))
+    print("r : \n %s" % str(r))
 
 
 def gram_schmidt(A, make_orthogonal):
@@ -275,10 +260,9 @@ def ex5(eps=1):
 if __name__ == '__main__':
     # ex1b()
     # ex4a()
-    # ex4b_QR()
+    ex4b_QR()
     # ex4b_SVD()
     # ex4c()
-    # ex4b_SVD()
     # ex4d()
     # ex5()
-    ex5(float('1e-10'))
+    # ex5(float('1e-10'))

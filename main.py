@@ -166,7 +166,7 @@ def gram_schmidt(A, make_orthogonal):
 
     for a in a_cols:
         q, r = make_orthogonal(a, new_cols, n)
-        new_cols = np.vstack([new_cols, q])  # adding the ortogonal vector to Q
+        new_cols = np.vstack([new_cols, q])  # adding the orthogonal vector to Q
         rs.append(r)  # adding the needed vector to R
     finale_R = np.stack(rs, axis=0)
     return new_cols.transpose(), finale_R.transpose()

@@ -141,7 +141,6 @@ def ex4d():
     ATWA = ATW @ A
     ATWb = ATW @ b
     ATWA_inverse = np.linalg.inv(ATWA)
-
     x = ATWA_inverse @ ATWb
     print("W : \n %s" % str(W))
     print("ATWA : \n %s" % str(ATWA))
@@ -260,9 +259,9 @@ def ex5(eps=1):
 if __name__ == '__main__':
     # ex1b()
     # ex4a()
-    ex4b_QR()
+    # ex4b_QR()
     # ex4b_SVD()
     # ex4c()
-    # ex4d()
+     ex4d()
     # ex5()
     # ex5(float('1e-10'))

@@ -153,7 +153,7 @@ def gram_schmidt(A, make_orthogonal):
     '''
     :param A: the matrix
     :param make_orthogonal: function that gets a matrix 'M' and vector 'V'
-    and returns the ortogonal vector of 'V' to the matrix 'M'
+    and returns the orthogonal vector of 'V' to the matrix 'M'
      and r that will be added to the R matrix
     :return: Q matrix and R matrix
     '''
